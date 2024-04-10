@@ -31,7 +31,15 @@ So you just have to run:
 direnv allow
 ```
 
-### 4. Run the API
+### 4. Create a virtual env (could be useful if you are using Pycharm)
+
+```shell
+nix-build env.nix -o venv
+```
+
+Then tell PyCharm to use this venv
+
+### 5. Run the API
 
 ```shell
 uvicorn main:app --reload
