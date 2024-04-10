@@ -50,54 +50,17 @@ The reload param is optional. If everything is working correctly, you can go to 
 
 ## Deploy the API on a NixOS system
 
-1. Create the config `myproject.nix`
+1. Import `myproject.nix` into your system:
 
 ```nix
 { config, pkgs, ... }:
 
-let
-  unstable = import <unstable> {};
-in
 {
-  # Add the service to systemd
-  systemd.services.myproject =
-  let
-    projectDir = "/home/.../fastapi-nixos-starter-pack";
-  in
-  {
-    enable = true;
-    description = "My API";
-    serviceConfig = {
-      User = "...";
-      WorkingDirectory = projectDir;
-      Restart = "always";
-      ExecStart = let
-        python = unstable.pkgs.python311.withPackages (ps: with ps; [
-          fastapi
-          uvicorn
-        ]);
-      in
-        "${python.interpreter} main.py";
-    };
-  };
-
-  # SSL certificate
-  security.acme = {
-    acceptTerms = true;
-    defaults.email = "youremailaddress";
-  };
-
-  # Reverse Proxy
-  services.nginx = {
-    enable = true;
-    recommendedTlsSettings = true;
-    virtualHosts = {
-      "yourdomainname.com" = {
-         locations."/".proxyPass = "http://localhost:8000";
-         forceSSL = true;
-         enableACME = true;
-      };
-    };
-  };
+  imports =
+    [
+      /home/.../myproject.nix
+    ];
 }
 ```
+
+and `nixos-rebuild switch`.
