@@ -1,5 +1,7 @@
 # FastAPI NixOS Starter Pack
 
+This tutorial shows how to deploy an API on the Web using FastAPI on a NixOS system.
+
 ## Implementing the API
 
 ### 1. Install direnv
@@ -47,18 +49,25 @@ uvicorn main:app --reload
 
 or using Python:
 
-```python
-import uvicorn
-
-if __name__ == '__main__':
-    uvicorn.run("main:app", port=8000, log_level="info", reload=True)
+```shell
+python main.py
 ```
 
 The reload param is optional. If everything is working correctly, you can go to the next step.
 
 ## Deploy the API on a NixOS system
 
-1. Import `myproject.nix` into your system:
+1. Use a DNS Service (like https://dns.he.net/) to link the domain name to your server
+
+yourdomainname.com -> your_ip_address (A record)
+
+2. Create some port forwarding on your router
+
+your_ip_address -> your_local_ip_address (on ports 80 and 443 for example)
+
+3. Import `myproject.nix` into your system:
+
+This file contains the backend service, the reverse proxy and the SSL certification system
 
 ```nix
 { config, pkgs, ... }:
@@ -71,4 +80,4 @@ The reload param is optional. If everything is working correctly, you can go to 
 }
 ```
 
-and `nixos-rebuild switch`.
+and `sudo nixos-rebuild switch`.
